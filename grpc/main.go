@@ -8,7 +8,7 @@ import (
 	"net"
 )
 
-func Register(port int) (*grpc.Server, error) {
+func Register(port int, res func()) (*grpc.Server, error) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		log.Fatalf("failed to listen:%v", err)
@@ -17,7 +17,7 @@ func Register(port int) (*grpc.Server, error) {
 	s := grpc.NewServer()
 	//反射接口支持查询
 	reflection.Register(s)
-
+	res()
 	log.Printf("sever listening at %v", err)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to listen:%v\",err")
